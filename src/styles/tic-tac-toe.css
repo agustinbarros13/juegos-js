@@ -1,9 +1,23 @@
+.tic-tac-toe-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background: rgba(207, 205, 205, 0.8);
+  border-radius: 10px;
+  transition: box-shadow 0.3s ease;
+}
+
 .tic-tac-toe {
   display: grid;
   grid-template-columns: repeat(3, 100px);
   gap: 10px;
   margin: 20px auto;
   width: max-content;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+  transition: box-shadow 0.3s ease;
 }
 
 .cell {
@@ -15,4 +29,111 @@
   font-size: 2em;
   background: #f0f0f0;
   cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+}
+
+.cell:hover {
+  transform: scale(1.1);
+}
+
+.cell.X {
+  color: #ff6347; /* Rojo */
+}
+
+.cell.O {
+  color: #4169e1; /* Azul */
+}
+
+@keyframes highlightX {
+  0% {
+    background-color: #ff6347;
+    color: #fff;
+  }
+  100% {
+    background-color: #f0f0f0;
+    color: #ff6347;
+  }
+}
+
+@keyframes highlightO {
+  0% {
+    background-color: #4169e1;
+    color: #fff;
+  }
+  100% {
+    background-color: #f0f0f0;
+    color: #4169e1;
+  }
+}
+
+.scoreboard {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+  width: 100%;
+  font-size: 1.2em;
+  font-weight: bold;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 5px;
+  color: #fff;
+}
+
+.scoreboard .player1-score {
+  color: rgb(223, 84, 84); /* Rojo */
+}
+
+.scoreboard .player2-score {
+  color: rgb(53, 53, 155); /* Azul */
+}
+
+.winner,
+.final-winner {
+  font-size: 1.5em;
+  font-weight: bold;
+  border: 2px solid #333;
+  width: 100%;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  transition: background-color 0.5s ease, color 0.5s ease;
+  opacity: 0;
+  animation: fadeIn 0.5s forwards;
+  margin-bottom: 20px;
+  color: #575757;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.winner:hover,
+.final-winner:hover {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.cell.highlight {
+  background-color: rgb(150, 72, 126);
+  animation: highlightWin 1s ease;
+}
+
+@keyframes highlightWin {
+  0%,
+  100% {
+    background-color: rgb(196, 126, 181);
+  }
+  50% {
+    background-color: #f0f0f0;
+  }
+}
+
+.final-winner {
+  font-size: 1em;
+  color: rgb(73, 67, 67);
 }

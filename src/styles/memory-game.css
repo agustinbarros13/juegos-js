@@ -1,9 +1,31 @@
+.memory-game-container {
+  text-align: center;
+  margin: 20px auto;
+}
+
+.lives-container {
+  margin-bottom: 20px;
+}
+
+.game-board-container {
+  display: inline-block;
+  border: 2px solid #333;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s, transform 0.3s;
+}
+
+.game-board-container:hover {
+  border-color: #7fad39;
+  transform: translateY(-5px);
+}
+
 .memory-game {
   display: grid;
   grid-template-columns: repeat(4, 100px);
   gap: 10px;
-  margin: 20px auto;
-  width: max-content;
+  margin: 0 auto;
 }
 
 .card {
@@ -16,8 +38,46 @@
   background: #f0f0f0;
   cursor: pointer;
   user-select: none;
+  transition: transform 0.3s, background 0.3s;
 }
 
 .card.flipped {
   background: #a0e1a0;
+  transform: rotateY(180deg);
+}
+
+.result,
+.lives {
+  margin-top: 20px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  transition: transform 0.3s, opacity 0.3s;
+}
+
+.lives {
+  display: inline-block;
+  padding: 10px;
+  background-color: #333;
+  color: #fff;
+  border-radius: 5px;
+}
+
+.lives-count {
+  display: inline-block;
+  margin-left: 10px;
+  font-size: 1.2rem;
+  font-weight: normal;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
 }

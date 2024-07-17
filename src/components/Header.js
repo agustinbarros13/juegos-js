@@ -1,12 +1,16 @@
 export default function Header() {
   const header = document.createElement('header')
   header.innerHTML = `
-    <h1>Juego de Ejemplo</h1>
-    <nav>
-      <button data-section="tic-tac-toe">Tres en Raya</button>
-      <button data-section="memory-game">Memory Game</button>
-      <button data-section="rock-paper-scissors">Piedra, Papel o Tijera</button>
-    </nav>
+    <div class="header-content">
+      <h1>Juego de Ejemplo</h1>
+      <nav>
+        <ul>
+          <li><button data-section="tic-tac-toe">Tres en Raya</button></li>
+          <li><button data-section="memory-game">Memory Game</button></li>
+          <li><button data-section="rock-paper-scissors">Piedra, Papel o Tijera</button></li>
+        </ul>
+      </nav>
+    </div>
   `
   return header
 }
