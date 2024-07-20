@@ -31,30 +31,60 @@ export default function RockPaperScissors() {
   const score = document.createElement('div')
   score.classList.add('score')
 
-  let userWins = 0
-  let computerWins = 0
+  let userWins = parseInt(localStorage.getItem('rpsUserWins')) || 0
+  let computerWins = parseInt(localStorage.getItem('rpsComputerWins')) || 0
   const rounds = 2
 
-  function updateScore() {
+  const updateScore = () => {
     score.innerHTML = `
       <p>Victorias del Usuario: ${userWins}</p>
       <p>Victorias de la Computadora: ${computerWins}</p>
     `
+    localStorage.setItem('rpsUserWins', userWins)
+    localStorage.setItem('rpsComputerWins', computerWins)
   }
 
-  function checkWinner() {
+  const checkWinner = () => {
     if (userWins === rounds || computerWins === rounds) {
       const finalWinner =
-        userWins === rounds ? '¡Ganaste el juego!' : 'Perdiste el juego...'
-      result.innerHTML += `<p><strong>${finalWinner}</strong></p>`
+        userWins === rounds ? 'Ganador: Jugador' : 'Ganador: Computadora'
+      result.innerHTML = `
+        <p>${finalWinner}</p>
+      `
+      saveGameResult(userWins === rounds ? 'Usuario' : 'Ordenador')
       setTimeout(() => {
         userWins = 0
         computerWins = 0
-        result.innerHTML = ''
         updateScore()
+        result.innerHTML = '' // Limpiar el resultado después del tiempo de espera
+        showPreviousResult() // Mostrar el resultado de la última partida
       }, 3000)
     }
   }
+
+  const saveGameResult = (winner) => {
+    localStorage.setItem('rpsGameResult', winner)
+  }
+
+  const getGameResult = () => {
+    return (
+      localStorage.getItem('rpsGameResult') || 'No hay resultados anteriores'
+    )
+  }
+
+  const showPreviousResult = () => {
+    const resultMessage = getGameResult()
+    const resultElement = document.createElement('div')
+    resultElement.className = 'previous-score'
+    resultElement.textContent = `Última partida ganada por: ${resultMessage}`
+    container.appendChild(resultElement)
+    setTimeout(() => {
+      resultElement.remove()
+    }, 3000)
+  }
+
+  // Mostrar resultado anterior al cargar el juego
+  showPreviousResult()
 
   choicesContainer.addEventListener('click', (e) => {
     if (e.target.classList.contains('choice')) {

@@ -1,69 +1,64 @@
 import '@styles/tic-tac-toe.css'
 
 export default function TicTacToe() {
-  const container = document.createElement('div')
-  container.className = 'tic-tac-toe-container'
+  let board = Array(9).fill(null)
+  let currentPlayer = 'X'
+  let player1Wins = parseInt(localStorage.getItem('ticTacToePlayer1Wins')) || 0
+  let player2Wins = parseInt(localStorage.getItem('ticTacToePlayer2Wins')) || 0
+  const roundsToWin = 2
 
-  const ticTacToe = document.createElement('div')
-  ticTacToe.className = 'tic-tac-toe'
+  const container = createElement('div', 'tic-tac-toe-container')
+  const ticTacToe = createElement('div', 'tic-tac-toe')
+  const scoreboard = createScoreboard()
+  const resultDiv = createElement('div', 'result')
+  const previousResultDiv = createElement('div', 'previous-result')
 
-  const scoreboard = document.createElement('div')
-  scoreboard.className = 'scoreboard'
-  const player1ScoreDiv = document.createElement('div')
-  player1ScoreDiv.className = 'player1-score'
-  player1ScoreDiv.textContent = 'Jugador 1: 0'
-  const player2ScoreDiv = document.createElement('div')
-  player2ScoreDiv.className = 'player2-score'
-  player2ScoreDiv.textContent = 'Jugador 2: 0'
-  scoreboard.appendChild(player1ScoreDiv)
-  scoreboard.appendChild(player2ScoreDiv)
-
-  const winnerDiv = document.createElement('div')
-  winnerDiv.className = 'winner'
-
-  const finalWinnerDiv = document.createElement('div')
-  finalWinnerDiv.className = 'final-winner'
-
-  // Función para limpiar los mensajes de ganador
-  const clearWinnerDivs = () => {
-    winnerDiv.textContent = ''
-    finalWinnerDiv.textContent = ''
-    winnerDiv.classList.remove('visible')
-    finalWinnerDiv.classList.remove('visible')
+  function createElement(tag, className) {
+    const element = document.createElement(tag)
+    element.className = className
+    return element
   }
 
-  let board = Array(9).fill(null)
-  let currentPlayer = Math.random() < 0.5 ? 'X' : 'O'
-  let player1Wins = 0
-  let player2Wins = 0
-  let gamesPlayed = 0
+  function createScoreboard() {
+    const scoreboardElement = createElement('div', 'scoreboard')
+    updateScoreboard(scoreboardElement)
+    return scoreboardElement
+  }
 
-  const updateBoard = () => {
+  function updateScoreboard(scoreboardElement) {
+    scoreboardElement.innerHTML = ''
+    scoreboardElement.appendChild(
+      createElement('div', 'player1-score')
+    ).textContent = `Jugador 1: ${player1Wins}`
+    scoreboardElement.appendChild(
+      createElement('div', 'player2-score')
+    ).textContent = `Jugador 2: ${player2Wins}`
+  }
+
+  function updateBoard() {
     ticTacToe.innerHTML = ''
     board.forEach((cell, index) => {
-      const cellElement = document.createElement('div')
-      cellElement.className = `cell ${cell || ''}`
+      const cellElement = createElement('div', `cell ${cell || ''}`)
       cellElement.textContent = cell || ''
       cellElement.addEventListener('click', () => makeMove(index))
       ticTacToe.appendChild(cellElement)
     })
     container.innerHTML = ''
+    container.appendChild(resultDiv)
     container.appendChild(scoreboard)
     container.appendChild(ticTacToe)
-    container.appendChild(winnerDiv)
-    container.appendChild(finalWinnerDiv)
+    updateScoreboard(scoreboard)
   }
 
-  const makeMove = (index) => {
-    if (!board[index] && gamesPlayed < 3) {
+  function makeMove(index) {
+    if (!board[index] && !checkWinner()) {
       board[index] = currentPlayer
       updateBoard()
-      checkWinner()
-      currentPlayer = currentPlayer === 'X' ? 'O' : 'X'
+      if (!checkWinner()) currentPlayer = currentPlayer === 'X' ? 'O' : 'X'
     }
   }
 
-  const checkWinner = () => {
+  function checkWinner() {
     const winningCombinations = [
       [0, 1, 2],
       [3, 4, 5],
@@ -74,83 +69,108 @@ export default function TicTacToe() {
       [0, 4, 8],
       [2, 4, 6]
     ]
-
-    for (const combination of winningCombinations) {
-      const [a, b, c] = combination
+    for (const [a, b, c] of winningCombinations) {
       if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-        highlightWinningCombination(combination)
+        highlightWinningCombination([a, b, c])
         displayWinner(board[a])
         updateScore(board[a])
-        return
+        return true
       }
     }
-
     if (!board.includes(null)) {
       displayWinner('Draw')
       setTimeout(resetGame, 2000)
     }
+    return false
   }
 
-  const highlightWinningCombination = (combination) => {
+  function highlightWinningCombination(combination) {
     combination.forEach((index) => {
-      const cell = ticTacToe.querySelector(`.cell:nth-child(${index + 1})`)
-      cell.classList.add('highlight')
+      ticTacToe
+        .querySelector(`.cell:nth-child(${index + 1})`)
+        .classList.add('highlight')
     })
-    setTimeout(resetGame, 2000)
   }
 
-  const displayWinner = (winner) => {
-    winnerDiv.textContent =
+  function displayWinner(winner) {
+    resultDiv.textContent =
       winner === 'Draw' ? '¡Es un empate! :/' : `${winner} gana esta ronda.`
-    winnerDiv.classList.add('visible')
+    resultDiv.classList.add('visible')
     setTimeout(() => {
-      winnerDiv.classList.remove('visible')
-      resetGame() // Reiniciar el juego automáticamente después de mostrar el mensaje final
-    }, 2000) // Desaparecer mensaje de ganador después de 2 segundos
-  }
-
-  const updateScore = (winner) => {
-    if (winner === 'X') player1Wins++
-    else if (winner === 'O') player2Wins++
-
-    player1ScoreDiv.textContent = `Jugador 1: ${player1Wins}`
-    player2ScoreDiv.textContent = `Jugador 2: ${player2Wins}`
-
-    if (player1Wins === 2 || player2Wins === 2) {
-      displayFinalWinner()
-    }
-  }
-
-  const displayFinalWinner = () => {
-    finalWinnerDiv.textContent =
-      player1Wins > player2Wins
-        ? '¡Jugador 1 es el ganador del juego! :)'
-        : '¡Jugador 2 es el ganador del juego! :)'
-    finalWinnerDiv.classList.add('visible')
-    setTimeout(() => {
-      finalWinnerDiv.classList.remove('visible')
-      resetGame(true) // Reiniciar el juego y los puntajes después de mostrar el mensaje final
+      resultDiv.classList.remove('visible')
+      if (player1Wins === roundsToWin || player2Wins === roundsToWin)
+        displayFinalWinner()
+      else resetGame()
     }, 2000)
   }
 
-  const resetGame = (resetScores = false) => {
-    board = Array(9).fill(null)
-    currentPlayer = Math.random() < 0.5 ? 'X' : 'O' // Comienza aleatoriamente entre X y O
-    gamesPlayed = 0 // Reiniciar contador de juegos jugados
+  function updateScore(winner) {
+    if (winner === 'X') player1Wins++
+    else if (winner === 'O') player2Wins++
+    localStorage.setItem('ticTacToePlayer1Wins', player1Wins)
+    localStorage.setItem('ticTacToePlayer2Wins', player2Wins)
+    updateScoreboard(scoreboard)
+    localStorage.setItem(
+      'ticTacToeLastResult',
+      winner === 'Draw'
+        ? 'Empate'
+        : `Ganador: Jugador ${winner === 'X' ? '1' : '2'}`
+    )
+  }
 
+  function displayFinalWinner() {
+    resultDiv.textContent =
+      player1Wins > player2Wins
+        ? '¡Jugador 1 es el ganador del juego! :)'
+        : '¡Jugador 2 es el ganador del juego! :)'
+    resultDiv.classList.add('visible')
+    setTimeout(() => {
+      resultDiv.classList.remove('visible')
+      resetGame(true)
+    }, 2000)
+  }
+
+  function resetGame(resetScores = false) {
+    board = Array(9).fill(null)
+    currentPlayer = currentPlayer === 'X' ? 'O' : 'X'
     if (resetScores) {
       player1Wins = 0
       player2Wins = 0
-      player1ScoreDiv.textContent = 'Jugador 1: 0'
-      player2ScoreDiv.textContent = 'Jugador 2: 0'
+      localStorage.setItem('ticTacToePlayer1Wins', 0)
+      localStorage.setItem('ticTacToePlayer2Wins', 0)
+      resetShowPreviousResultFlag()
     }
-
     updateBoard()
-    clearWinnerDivs() // Limpia los mensajes de ganador al reiniciar el juego
+    resultDiv.textContent = ''
+    resultDiv.classList.remove('visible')
   }
 
-  // Iniciar el juego cuando se carga el componente
-  updateBoard()
+  function showPreviousResult() {
+    if (localStorage.getItem('shouldShowPreviousResult')) {
+      const lastResult =
+        localStorage.getItem('ticTacToeLastResult') ||
+        'No hay resultados anteriores'
+      previousResultDiv.textContent = `Último Ganador: ${lastResult}`
+      previousResultDiv.className = 'previous-result small-text'
+      container.appendChild(previousResultDiv)
+      localStorage.removeItem('shouldShowPreviousResult')
+      setTimeout(() => {
+        previousResultDiv.remove()
+        updateBoard()
+      }, 4000)
+    } else {
+      updateBoard()
+    }
+  }
+
+  function resetShowPreviousResultFlag() {
+    localStorage.removeItem('shouldShowPreviousResult')
+  }
+
+  window.addEventListener('load', () => {
+    localStorage.setItem('shouldShowPreviousResult', 'true')
+    showPreviousResult()
+  })
 
   return container
 }

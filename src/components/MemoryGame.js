@@ -69,6 +69,7 @@ export default function MemoryGame() {
 
       if (matchedPairs === images.length) {
         result.innerHTML = `<p>¡Ganaste!</p>`
+        saveMemoryGameResult('victoria')
         setTimeout(resetGame, 3000)
       }
     } else {
@@ -82,6 +83,7 @@ export default function MemoryGame() {
         livesCounter.textContent = `Vidas: ${lives}`
         if (lives === 0) {
           result.innerHTML = `<p>¡Perdiste!</p>`
+          saveMemoryGameResult('derrota')
           setTimeout(resetGame, 3000)
         }
       }, 1000)
@@ -97,6 +99,29 @@ export default function MemoryGame() {
     result.innerHTML = ''
     updateBoard()
   }
+
+  const saveMemoryGameResult = (result) => {
+    localStorage.setItem('memoryGameResult', result)
+  }
+
+  const getMemoryGameResult = () => {
+    return (
+      localStorage.getItem('memoryGameResult') || 'No hay resultados anteriores'
+    )
+  }
+
+  const showPreviousResult = () => {
+    const result = getMemoryGameResult()
+    const resultElement = document.createElement('div')
+    resultElement.className = 'previous-score'
+    resultElement.textContent = `Última partida: ${result}`
+    container.appendChild(resultElement)
+    setTimeout(() => {
+      resultElement.remove()
+    }, 4000)
+  }
+
+  showPreviousResult()
 
   shuffleCards()
   updateBoard()

@@ -59,6 +59,19 @@ nav button:focus {
 nav button:active {
   background: #ff4d40;
 }
+.previous-score {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  z-index: 1000;
+  font-size: 16px;
+  transition: opacity 0.5s ease;
+}
 
 @media (max-width: 768px) {
   .header-content {
@@ -79,6 +92,9 @@ footer {
   text-align: center;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
   transition: background 0.3s;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
 }
 
 .footer-content p {
