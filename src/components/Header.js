@@ -6,7 +6,7 @@ export default function Header() {
       <nav>
         <ul>
           <li><button data-section="tic-tac-toe">Tres en Raya</button></li>
-          <li><button data-section="memory-game">Memory Game</button></li>
+          <li><button data-section="memory-game">Juego de Memoria</button></li>
           <li><button data-section="rock-paper-scissors">Piedra, Papel o Tijera</button></li>
         </ul>
       </nav>

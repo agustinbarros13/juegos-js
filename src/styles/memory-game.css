@@ -81,3 +81,21 @@
     transform: scale(1);
   }
 }
+
+@media (max-width: 410px) {
+  .game-board-container {
+    padding: 10px;
+    width: 90%;
+  }
+
+  .memory-game {
+    grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+    gap: 5px;
+  }
+
+  .card {
+    width: 70px;
+    height: 70px;
+    font-size: 1.5em;
+  }
+}
